@@ -93,7 +93,7 @@ test('authenticated user can logout', function () {
 
     $response = $this->actingAs($user)->post(route('logout'));
 
-    $response->assertRedirect(route('home'));
+    $response->assertRedirect(route('login'));
     $this->assertFalse(Auth::check());
 });
 
@@ -184,4 +184,18 @@ test('admin user sees full navigation menus including auditor and panel link', f
         ->assertSee(route('scorecard.index'))
         ->assertSee(route('data.index'))
         ->assertSee('Buka Panel Admin');
+});
+
+test('unauthenticated visitor entering root is redirected to login page', function () {
+    $this->flushSession();
+    $response = $this->get(route('home'));
+
+    $response->assertRedirect(route('login'));
+});
+
+test('unauthenticated visitor entering protected route is redirected to login page', function () {
+    $this->flushSession();
+    $response = $this->get(route('tracker.index'));
+
+    $response->assertRedirect(route('login'));
 });
