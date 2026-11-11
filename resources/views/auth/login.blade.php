@@ -1,418 +1,212 @@
 @extends('layouts.auth', ['title' => 'Masuk Akun'])
 
 @section('content')
-<div class="min-h-screen w-full flex flex-col lg:flex-row bg-white">
-    {{-- SISI KIRI: FORM LOGIN BERSIH & SELARAS TEMA KINERJA --}}
-    <div class="w-full lg:w-1/2 min-h-screen flex flex-col justify-between p-6 sm:p-10 lg:p-14 xl:p-16 z-10 bg-white">
-        {{-- Brand Logo Header --}}
-        <div>
-            <div class="inline-flex items-center gap-2.5">
-                <div class="w-8 h-8 rounded-xl bg-[#0f172a] text-[#e6ff94] flex items-center justify-center shadow-xs">
-                    <svg viewBox="0 0 256 256" class="w-4 h-4" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<div class="min-h-screen w-full grid lg:grid-cols-2 bg-white">
+
+    {{-- KIRI: formulir masuk --}}
+    <div class="flex flex-col gap-8 lg:justify-between px-6 py-8 sm:px-10 lg:px-14 xl:px-16">
+        <header>
+            <a href="{{ route('login') }}" class="inline-flex items-center gap-2.5 rounded focus-ring">
+                <span class="w-8 h-8 rounded-lg bg-[#0f172a] text-[#e6ff94] flex items-center justify-center">
+                    <svg viewBox="0 0 256 256" class="w-4 h-4" fill="none" aria-hidden="true">
                         <path fill="currentColor" fill-rule="evenodd" d="M68 55C61.37 55 56 60.37 56 67V211C56 217.63 61.37 223 68 223H92C98.63 223 104 217.63 104 211V163L152 211C156.69 215.69 163.31 215.69 168 211L196 183C200.69 178.31 200.69 171.69 196 167L152 123L196 79C200.69 74.31 200.69 67.69 196 63L168 35C163.31 30.31 156.69 30.31 152 35L104 83V67C104 60.37 98.63 55 92 55H68ZM126 125A14 14 0 1 0 126 153A14 14 0 1 0 126 125Z"/>
                     </svg>
-                </div>
-                <span class="text-base font-bold text-slate-900 font-display tracking-tight">Kinerja</span>
-            </div>
-        </div>
+                </span>
+                <span class="text-base font-bold tracking-tight">Kinerja</span>
+            </a>
+        </header>
 
-        {{-- Center Form Container --}}
-        <div class="w-full max-w-sm mx-auto my-auto py-8" x-data="{
-            role: 'warga',
-            nik: '{{ old('nik', '') }}',
-            adminUser: '{{ old('username', '') }}',
-            adminPass: '',
-            showAdminPass: false,
-            showOtherMethods: false
-        }">
-            {{-- Title & Subtitle --}}
-            <div class="mb-6">
-                <h1 class="text-2xl font-bold text-slate-900 tracking-tight font-display">Masuk Akun</h1>
-                <p class="text-sm text-slate-500 mt-1">Silakan masukkan data akun Anda.</p>
-            </div>
+        <div class="w-full max-w-[22rem] mx-auto py-2 lg:py-10" x-data="{ role: 'warga', showPass: false, showOther: false }">
+            <h1 class="text-[1.75rem] leading-tight font-bold tracking-tight">Masuk akun</h1>
+            <p class="mt-1.5 text-sm text-slate-500">Pilih peran, lalu masukkan data akun.</p>
 
-            {{-- Role Switcher Pills (Sesuai Tema Navigasi Kinerja) --}}
-            <div class="flex gap-1.5 p-1 bg-slate-100 rounded-xl mb-5 text-xs font-semibold">
-                <button
-                    type="button"
-                    @click="role = 'warga'"
-                    :class="role === 'warga' ? 'bg-[#0f172a] text-[#e6ff94] shadow-xs' : 'text-slate-600 hover:text-slate-900'"
-                    class="flex-1 py-2 px-3 rounded-lg transition-all text-center cursor-pointer"
-                >
-                    Masyarakat (NIK)
+            @if(session('error'))
+                <p class="mt-4 px-3 py-2 rounded-lg bg-rose-50 border border-rose-200 text-[13px] text-rose-800" role="alert">{{ session('error') }}</p>
+            @endif
+            @if(session('success'))
+                <p class="mt-4 px-3 py-2 rounded-lg bg-emerald-50 border border-emerald-200 text-[13px] text-emerald-800" role="status">{{ session('success') }}</p>
+            @endif
+
+            <div class="mt-6 grid grid-cols-2 gap-1 rounded-lg bg-slate-100 p-1" role="tablist" aria-label="Peran akun">
+                <button type="button" role="tab" @click="role = 'warga'"
+                        :aria-selected="role === 'warga' ? 'true' : 'false'"
+                        :class="role === 'warga' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'"
+                        class="min-h-11 rounded-md text-[13px] font-semibold transition-colors focus-ring">
+                    Masyarakat
                 </button>
-                <button
-                    type="button"
-                    @click="role = 'admin'"
-                    :class="role === 'admin' ? 'bg-[#0f172a] text-[#e6ff94] shadow-xs' : 'text-slate-600 hover:text-slate-900'"
-                    class="flex-1 py-2 px-3 rounded-lg transition-all text-center cursor-pointer"
-                >
+                <button type="button" role="tab" @click="role = 'admin'"
+                        :aria-selected="role === 'admin' ? 'true' : 'false'"
+                        :class="role === 'admin' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'"
+                        class="min-h-11 rounded-md text-[13px] font-semibold transition-colors focus-ring">
                     Administrator
                 </button>
             </div>
 
-            {{-- Flash Alert --}}
-            @if(session('error'))
-                <div class="mb-4 px-3.5 py-2.5 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-700">
-                    {{ session('error') }}
+            {{-- Masyarakat --}}
+            <form x-show="role === 'warga'" action="{{ route('auth.nik') }}" method="POST" class="mt-5 space-y-4" x-ref="nikForm">
+                @csrf
+                <div>
+                    <label for="nik" class="block text-[13px] font-semibold text-slate-800 mb-1.5">NIK</label>
+                    <input type="text" id="nik" name="nik" x-ref="nikInput" value="{{ old('nik') }}" maxlength="16"
+                           inputmode="numeric" autocomplete="username" required
+                           aria-describedby="nik-hint @error('nik') nik-error @enderror"
+                           placeholder="16 digit"
+                           class="w-full min-h-11 px-3 rounded-lg border border-slate-300 bg-white text-sm font-mono
+                                  placeholder:font-sans placeholder:text-slate-500
+                                  focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10">
+                    @error('nik')
+                        <p id="nik-error" class="mt-1.5 text-[13px] text-rose-700">{{ $message }}</p>
+                    @enderror
+                    <p id="nik-hint" class="mt-1.5 text-[12px] text-slate-500">NIK tidak disimpan. Sistem hanya menyimpan hash-nya.</p>
                 </div>
-            @endif
 
-            @if(session('success'))
-                <div class="mb-4 px-3.5 py-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800">
-                    {{ session('success') }}
-                </div>
-            @endif
+                <button type="submit"
+                        class="w-full min-h-11 rounded-lg bg-[#0f172a] text-[#e6ff94] text-sm font-bold
+                               hover:bg-slate-800 transition-colors focus-ring">
+                    Masuk sebagai masyarakat
+                </button>
 
-            {{-- 1. TAB MASYARAKAT --}}
-            <div x-show="role === 'warga'" x-cloak class="space-y-4">
-                <form action="{{ route('auth.nik') }}" method="POST" class="space-y-4">
-                    @csrf
-                    <div>
-                        <label for="nik" class="block text-xs font-semibold text-slate-700 mb-1.5">
-                            Nomor Induk Kependudukan (NIK)
-                        </label>
-                        <input
-                            type="text"
-                            id="nik"
-                            name="nik"
-                            x-model="nik"
-                            maxlength="16"
-                            inputmode="numeric"
-                            placeholder="Masukkan 16 digit NIK"
-                            required
-                            class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0f172a]/10 focus:border-[#0f172a] transition-all font-mono"
-                        >
-                        @error('nik')
-                            <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div class="flex items-center justify-between text-[11px] text-slate-500">
-                        <span>Contoh NIK demo:</span>
-                        <div class="flex gap-2">
-                            <button type="button" @click="nik = '3302112001990001'" class="hover:text-slate-900 underline cursor-pointer font-mono">
-                                PKH (330211...)
-                            </button>
-                            <span>&bull;</span>
-                            <button type="button" @click="nik = '3302112001990002'" class="hover:text-slate-900 underline cursor-pointer font-mono">
-                                BPNT
-                            </button>
-                        </div>
-                    </div>
-
-                    <button
-                        type="submit"
-                        class="w-full bg-[#0f172a] hover:bg-slate-800 text-[#e6ff94] font-bold text-sm py-2.5 px-4 rounded-xl shadow-xs transition-all cursor-pointer"
-                    >
-                        Masuk
+                <p class="text-[12px] text-slate-500">
+                    Coba data demo:
+                    <button type="button" @click="$refs.nikInput.value = '3302112001990001'"
+                            class="underline underline-offset-2 hover:text-slate-800 focus-ring rounded">
+                        NIK penerima PKH
                     </button>
-                </form>
-            </div>
+                </p>
+            </form>
 
-            {{-- 2. TAB ADMINISTRATOR --}}
-            <div x-show="role === 'admin'" x-cloak class="space-y-4">
-                <form action="{{ route('auth.admin') }}" method="POST" class="space-y-4">
-                    @csrf
-                    <div>
-                        <label for="username" class="block text-xs font-semibold text-slate-700 mb-1.5">
-                            Username
-                        </label>
-                        <input
-                            type="text"
-                            id="username"
-                            name="username"
-                            x-model="adminUser"
-                            placeholder="admin"
-                            required
-                            class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0f172a]/10 focus:border-[#0f172a] transition-all"
-                        >
-                        @error('username')
-                            <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
+            {{-- Administrator --}}
+            <form x-show="role === 'admin'" x-cloak action="{{ route('auth.admin') }}" method="POST" class="mt-5 space-y-4">
+                @csrf
+                <div>
+                    <label for="username" class="block text-[13px] font-semibold text-slate-800 mb-1.5">Nama pengguna</label>
+                    <input type="text" id="username" name="username" value="{{ old('username') }}"
+                           autocomplete="username" required
+                           class="w-full min-h-11 px-3 rounded-lg border border-slate-300 bg-white text-sm
+                                  placeholder:text-slate-500 focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10">
+                    @error('username')
+                        <p class="mt-1.5 text-[13px] text-rose-700">{{ $message }}</p>
+                    @enderror
+                </div>
 
-                    <div>
-                        <label for="password" class="block text-xs font-semibold text-slate-700 mb-1.5">
-                            Kata Sandi
-                        </label>
-                        <div class="relative">
-                            <input
-                                :type="showAdminPass ? 'text' : 'password'"
-                                id="password"
-                                name="password"
-                                x-model="adminPass"
-                                placeholder="••••••••"
-                                required
-                                class="w-full text-sm px-3.5 py-2.5 pr-9 rounded-xl border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0f172a]/10 focus:border-[#0f172a] transition-all"
-                            >
-                            <button
-                                type="button"
-                                @click="showAdminPass = !showAdminPass"
-                                class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
-                                aria-label="Lihat kata sandi"
-                            >
-                                <svg x-show="!showAdminPass" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                </svg>
-                                <svg x-show="showAdminPass" x-cloak class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
-                                </svg>
-                            </button>
-                        </div>
-                        @error('password')
-                            <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div class="flex items-center justify-between text-[11px] text-slate-500">
-                        <span>Kredensial demo:</span>
-                        <button type="button" @click="adminUser = 'admin'; adminPass = 'admin123'" class="hover:text-slate-900 underline cursor-pointer font-mono">
-                            admin / admin123
+                <div>
+                    <label for="password" class="block text-[13px] font-semibold text-slate-800 mb-1.5">Kata sandi</label>
+                    <div class="relative">
+                        <input :type="showPass ? 'text' : 'password'" id="password" name="password"
+                               autocomplete="current-password" required
+                               class="w-full min-h-11 px-3 pr-11 rounded-lg border border-slate-300 bg-white text-sm
+                                      focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10">
+                        <button type="button" @click="showPass = !showPass"
+                                :aria-label="showPass ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'"
+                                class="absolute right-1 top-1/2 -translate-y-1/2 min-h-9 min-w-9 grid place-items-center
+                                       rounded text-slate-500 hover:text-slate-800 focus-ring">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
                         </button>
                     </div>
+                    @error('password')
+                        <p class="mt-1.5 text-[13px] text-rose-700">{{ $message }}</p>
+                    @enderror
+                </div>
 
-                    <button
-                        type="submit"
-                        class="w-full bg-[#0f172a] hover:bg-slate-800 text-[#e6ff94] font-bold text-sm py-2.5 px-4 rounded-xl shadow-xs transition-all cursor-pointer"
-                    >
-                        Masuk
-                    </button>
-                </form>
-            </div>
+                <button type="submit"
+                        class="w-full min-h-11 rounded-lg bg-[#0f172a] text-[#e6ff94] text-sm font-bold
+                               hover:bg-slate-800 transition-colors focus-ring">
+                    Masuk sebagai administrator
+                </button>
+            </form>
 
-            {{-- Secondary Actions: Guest & Other Methods --}}
-            <div class="mt-6 pt-5 border-t border-slate-100 space-y-3 text-center">
+            <div class="mt-6 pt-5 border-t border-slate-200 space-y-3">
                 <a href="{{ route('auth.guest') }}"
-                   class="w-full inline-flex items-center justify-center py-2 px-3 rounded-xl text-xs font-semibold text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-colors">
-                    Jelajah sebagai Tamu
+                   class="w-full min-h-11 grid place-items-center rounded-lg border border-slate-300 text-sm font-semibold
+                          text-slate-800 hover:bg-slate-50 transition-colors focus-ring">
+                    Lanjut tanpa akun
                 </a>
 
-                <div>
-                    <button
-                        type="button"
-                        @click="showOtherMethods = !showOtherMethods"
-                        class="text-xs text-slate-400 hover:text-slate-600 transition-colors inline-flex items-center gap-1 cursor-pointer"
-                    >
-                        <span x-text="showOtherMethods ? 'Sembunyikan opsi lain' : 'Opsi Masuk Lainnya (Google / OTP)'"></span>
-                    </button>
+                <button type="button" @click="showOther = !showOther" :aria-expanded="showOther ? 'true' : 'false'"
+                        class="w-full text-[13px] text-slate-600 hover:text-slate-900 transition-colors focus-ring rounded">
+                    <span x-text="showOther ? 'Tutup jalur lain' : 'Jalur masuk lain'"></span>
+                </button>
 
-                    <div x-show="showOtherMethods" x-cloak class="mt-3 space-y-2 text-left">
-                        {{-- Google Sign-in --}}
-                        <a href="{{ route('auth.google') }}"
-                           class="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-medium transition-colors">
-                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24">
-                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-                            </svg>
-                            <span>Masuk dengan Akun Google</span>
-                        </a>
+                <div x-show="showOther" x-cloak class="space-y-2">
+                    <a href="{{ route('auth.google') }}"
+                       class="w-full min-h-11 flex items-center justify-center gap-2 rounded-lg border border-slate-300
+                              text-sm font-medium text-slate-800 hover:bg-slate-50 transition-colors focus-ring">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" aria-hidden="true">
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                        </svg>
+                        Masuk dengan Google
+                    </a>
 
-                        {{-- OTP Form --}}
-                        <form action="{{ route('auth.otp.send') }}" method="POST" class="flex gap-2">
-                            @csrf
-                            <input
-                                type="email"
-                                name="email"
-                                value="{{ old('email') }}"
-                                placeholder="nama@domain.com"
-                                class="flex-1 text-xs px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-[#0f172a]"
-                            >
-                            <button type="submit" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold cursor-pointer">
-                                Kirim Kode OTP
-                            </button>
-                        </form>
-                    </div>
+                    <form action="{{ route('auth.otp.send') }}" method="POST" class="flex gap-2">
+                        @csrf
+                        <label for="email" class="sr-only">Alamat surel</label>
+                        <input type="email" id="email" name="email" value="{{ old('email') }}" required
+                               placeholder="nama@domain.com"
+                               class="flex-1 min-h-11 px-3 rounded-lg border border-slate-300 bg-white text-sm
+                                      placeholder:text-slate-500 focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10">
+                        <button type="submit"
+                                class="min-h-11 px-4 rounded-lg border border-slate-300 text-sm font-semibold
+                                       text-slate-800 hover:bg-slate-50 transition-colors focus-ring">
+                            Kirim kode
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
 
-        {{-- Footer --}}
-        <div>
-            <p class="text-xs text-slate-400">&copy; {{ date('Y') }} Kinerja</p>
-        </div>
+        <footer class="text-[12px] text-slate-500 lg:mt-0 mt-auto pt-8">
+            &copy; {{ date('Y') }} Kinerja. Data penerima pada sistem ini adalah data simulasi.
+        </footer>
     </div>
 
-        {{-- SISI KANAN: PETA INDONESIA 3D DENGAN ORNAMEN KARTOGRAFI & INTERAKSI LENGKAP --}}
-    <div class="hidden lg:flex lg:w-1/2 min-h-screen bg-[#f0f4f8] flex-col justify-between p-8 xl:p-10 relative overflow-hidden select-none border-l border-slate-200/80"
-         x-data="{
-             hovered: null,
-             islandData: {
-                 kalimantan: {
-                     name: 'Pulau Kalimantan',
-                     provinces: '5 Provinsi (Kalbar, Kalteng, Kalsel, Kaltim, Kaltara)',
-                     status: 'Pemantauan Aktif',
-                     coord: '0.9619° S, 114.5548° E',
-                     coverage: '100% Wilayah Terpetakan'
-                 },
-                 sumatera: {
-                     name: 'Pulau Sumatera',
-                     provinces: '10 Provinsi (Aceh, Sumut, Sumbar, Riau, Jambi, Sumsel, Bengkulu, Lampung, Babel, Kepri)',
-                     status: 'Pemantauan Aktif',
-                     coord: '0.5897° N, 101.3431° E',
-                     coverage: '100% Wilayah Terpetakan'
-                 },
-                 jawa: {
-                     name: 'Pulau Jawa',
-                     provinces: '6 Provinsi (Banten, DKI Jakarta, Jawa Barat, Jawa Tengah, DI Yogyakarta, Jawa Timur)',
-                     status: 'Pemantauan Aktif',
-                     coord: '7.6145° S, 110.7122° E',
-                     coverage: '100% Wilayah Terpetakan'
-                 },
-                 sulawesi: {
-                     name: 'Pulau Sulawesi',
-                     provinces: '6 Provinsi (Sulut, Gorontalo, Sulteng, Sulbar, Sulsel, Sultra)',
-                     status: 'Pemantauan Aktif',
-                     coord: '1.4300° S, 121.4456° E',
-                     coverage: '100% Wilayah Terpetakan'
-                 },
-                 papua: {
-                     name: 'Pulau Papua',
-                     provinces: '6 Provinsi (Papua, Papua Barat, Papua Selatan, Papua Tengah, Papua Pegunungan, Papua Barat Daya)',
-                     status: 'Pemantauan Aktif',
-                     coord: '4.2699° S, 138.0804° E',
-                     coverage: '100% Wilayah Terpetakan'
-                 },
-                 maluku: {
-                     name: 'Kepulauan Maluku',
-                     provinces: '2 Provinsi (Maluku &amp; Maluku Utara)',
-                     status: 'Pemantauan Aktif',
-                     coord: '3.2385° S, 130.1453° E',
-                     coverage: '100% Wilayah Terpetakan'
-                 },
-                 nusatenggara: {
-                     name: 'Bali &amp; Nusa Tenggara',
-                     provinces: '3 Provinsi (Bali, Nusa Tenggara Barat, Nusa Tenggara Timur)',
-                     status: 'Pemantauan Aktif',
-                     coord: '8.6574° S, 115.2167° E',
-                     coverage: '100% Wilayah Terpetakan'
-                 }
-             },
-             mouseX: 0,
-             mouseY: 0,
-             hoverTimer: null,
-             setHover(id) {
-                 if (this.hoverTimer) {
-                     clearTimeout(this.hoverTimer);
-                     this.hoverTimer = null;
-                 }
-                 this.hovered = id;
-             },
-             leaveHover(id) {
-                 if (this.hoverTimer) clearTimeout(this.hoverTimer);
-                 this.hoverTimer = setTimeout(() => {
-                     if (this.hovered === id) {
-                         this.hovered = null;
-                     }
-                     this.hoverTimer = null;
-                 }, 140);
-             },
-             handleMouseMove(e) {
-                 const rect = this.$el.getBoundingClientRect();
-                 this.mouseX = ((e.clientX - rect.left) / rect.width - 0.5) * 8;
-                 this.mouseY = ((e.clientY - rect.top) / rect.height - 0.5) * -8;
-             }
-         }"
-         @mousemove="handleMouseMove($event)"
-         @mouseleave="mouseX = 0; mouseY = 0; if (hoverTimer) clearTimeout(hoverTimer); hovered = null">
+    {{-- KANAN: peta Indonesia isometrik, interaktif saat kursor menyentuh pulau --}}
+    <aside class="hidden lg:flex flex-col items-center justify-center bg-slate-50 border-l border-slate-200 px-8 xl:px-12"
+           x-data="{
+               hovered: null,
+               islands: {
+                   sumatera:     { nama: 'Pulau Sumatera',          provinsi: '10 provinsi' },
+                   jawa:         { nama: 'Pulau Jawa',              provinsi: '6 provinsi' },
+                   kalimantan:   { nama: 'Pulau Kalimantan',        provinsi: '5 provinsi' },
+                   sulawesi:     { nama: 'Pulau Sulawesi',          provinsi: '6 provinsi' },
+                   nusatenggara: { nama: 'Bali dan Nusa Tenggara',  provinsi: '3 provinsi' },
+                   maluku:       { nama: 'Kepulauan Maluku',        provinsi: '2 provinsi' },
+                   papua:        { nama: 'Pulau Papua',             provinsi: '6 provinsi' }
+               },
+               mouseX: 0,
+               mouseY: 0,
+               hoverTimer: null,
+               setHover(id) {
+                   if (this.hoverTimer) {
+                       clearTimeout(this.hoverTimer);
+                       this.hoverTimer = null;
+                   }
+                   this.hovered = id;
+               },
+               leaveHover(id) {
+                   if (this.hoverTimer) clearTimeout(this.hoverTimer);
+                   this.hoverTimer = setTimeout(() => {
+                       if (this.hovered === id) {
+                           this.hovered = null;
+                       }
+                       this.hoverTimer = null;
+                   }, 140);
+               },
+               handleMouseMove(e) {
+                   const rect = this.$el.getBoundingClientRect();
+                   this.mouseX = ((e.clientX - rect.left) / rect.width - 0.5) * 8;
+                   this.mouseY = ((e.clientY - rect.top) / rect.height - 0.5) * -8;
+               }
+           }"
+           @mousemove="handleMouseMove($event)"
+           @mouseleave="mouseX = 0; mouseY = 0; if (hoverTimer) clearTimeout(hoverTimer); hovered = null">
 
-        {{-- BACKGROUND CARTOGRAPHIC TEXTURE & MARKS --}}
-        {{-- Subtle Dot Matrix Grid --}}
-        <div class="absolute inset-0 bg-[radial-gradient(#0f172a10_1px,transparent_1px)] [background-size:28px_28px] pointer-events-none"></div>
-
-        {{-- Concentric Range Rings Centered on Map Area --}}
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[520px] rounded-full border border-slate-300/40 pointer-events-none"></div>
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] h-[340px] rounded-full border border-dashed border-slate-300/30 pointer-events-none"></div>
-
-        {{-- Corner Geographic Reticles & Coordinates --}}
-        <div class="absolute inset-6 pointer-events-none text-slate-400 font-mono text-[10px] leading-none select-none">
-            {{-- Top Left --}}
-            <div class="absolute top-0 left-0 flex items-center gap-1.5">
-                <span class="text-slate-500 font-bold">+</span>
-                <span>06°04' LU (Sabang)</span>
-            </div>
-            {{-- Top Right --}}
-            <div class="absolute top-0 right-0 flex items-center gap-1.5">
-                <span>141°01' BT (Merauke)</span>
-                <span class="text-slate-500 font-bold">+</span>
-            </div>
-            {{-- Bottom Left --}}
-            <div class="absolute bottom-0 left-0 flex items-center gap-1.5">
-                <span class="text-slate-500 font-bold">+</span>
-                <span>095°00' BT (P. Weh)</span>
-            </div>
-            {{-- Bottom Right --}}
-            <div class="absolute bottom-0 right-0 flex items-center gap-1.5">
-                <span>11°00' LS (P. Rote)</span>
-                <span class="text-slate-500 font-bold">+</span>
-            </div>
-        </div>
-
-        {{-- 1. TOP HEADER ORNAMENTS: NATIONAL BADGE & COMPASS ROSE --}}
-        <div class="w-full flex items-center justify-between z-10">
-            <div class="flex items-center gap-3">
-                <div class="relative flex items-center justify-center">
-                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                    <span class="w-4 h-4 rounded-full bg-emerald-500/20 absolute animate-ping"></span>
-                </div>
-                <div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-xs font-bold text-slate-900 font-mono tracking-wider uppercase">Wilayah NKRI</span>
-                        <span class="text-[9px] font-mono font-semibold bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">Sistem Aktif</span>
-                    </div>
-                    <span class="text-[10px] text-slate-500 font-mono">0°47' S, 113°55' E • 38 Provinsi • 514 Daerah</span>
-                </div>
-            </div>
-
-            {{-- Cartographic North Compass Rose --}}
-            <div class="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-white/80 backdrop-blur-md border border-slate-200/90 shadow-2xs">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
-                    <polygon points="12,2 15,10 12,8 9,10" fill="#0f172a" />
-                    <polygon points="12,22 9,14 12,16 15,14" fill="#94a3b8" />
-                    <circle cx="12" cy="12" r="1.5" fill="#e6ff94" />
-                </svg>
-                <div class="text-left font-mono">
-                    <span class="block text-[10px] font-bold text-slate-800 leading-tight">U / NORTH</span>
-                    <span class="block text-[8px] text-slate-400 leading-none">WGS-84</span>
-                </div>
-            </div>
-        </div>
-
-        {{-- 2. CENTER STAGE: CARTOGRAPHIC INSPECTION HUD & 3D ISOMETRIC PEDESTAL --}}
-        <div class="w-full flex flex-col items-center justify-center my-auto py-2 z-10">
-            {{-- Interactive HUD Panel (Fixed-Height: Zero Layout Shift on Island Switching) --}}
-            <div class="w-full max-w-lg mb-3 flex-shrink-0">
-                <div class="h-[108px] p-3.5 rounded-2xl bg-[#0f172a] text-white shadow-xl border border-slate-800 backdrop-blur-md flex flex-col justify-between">
-                    {{-- Row 1: Title & Status Badge --}}
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full" :class="hovered ? 'bg-[#e6ff94] animate-pulse' : 'bg-emerald-400'"></span>
-                            <span class="text-xs font-extrabold tracking-tight font-display transition-colors"
-                                  :class="hovered ? 'text-[#e6ff94]' : 'text-white'"
-                                  x-text="hovered ? islandData[hovered].name : 'Cakupan Pengawasan Distribusi Nasional'"></span>
-                        </div>
-                        <span class="text-[9px] font-mono font-bold bg-white/10 px-2 py-0.5 rounded text-slate-300"
-                              x-text="hovered ? islandData[hovered].status : '38 Provinsi Terhubung'"></span>
-                    </div>
-
-                    {{-- Row 2: Fixed-Height Province List / Description (Locked to 38px to avoid vertical jump) --}}
-                    <div class="h-9 flex items-center overflow-hidden">
-                        <p class="text-xs text-slate-300 leading-snug line-clamp-2"
-                           x-text="hovered ? islandData[hovered].provinces : 'Pemantauan real-time penyaluran bantuan sosial di seluruh pulau dan perbatasan Indonesia untuk akuntabilitas publik tanpa manipulasi.'"></p>
-                    </div>
-
-                    {{-- Row 3: Footer Metadata --}}
-                    <div class="pt-1.5 border-t border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-slate-400">
-                        <span x-text="hovered ? 'Koordinat Sentral:' : 'Status Data:'"></span>
-                        <span class="text-[#e6ff94] font-semibold"
-                              x-text="hovered ? islandData[hovered].coord : '100% Wilayah Terpetakan • Terbuka untuk Warga'"></span>
-                    </div>
-                </div>
-            </div>
-
+        <div class="w-full max-w-2xl">
             {{-- 3D Isometric Viewport Container --}}
             <div class="w-full max-w-2xl relative transition-transform duration-500 ease-out py-8 sm:py-10"
                  :style="'transform: perspective(1000px) rotateX(' + (22 + mouseY) + 'deg) rotateY(' + (mouseX) + 'deg) rotateZ(-2.5deg);'">
@@ -616,41 +410,39 @@
                     <span>Proyeksi: Isometrik 3D • EPSG:4326</span>
                 </div>
             </div>
-        </div>
 
-        {{-- 3. BOTTOM CONTROL STRIP: REGION CHIPS & INSTRUCTION GUIDE --}}
-        <div class="w-full flex flex-col items-center gap-2.5 z-10">
-            <div class="flex items-center justify-center gap-1.5 flex-wrap">
+            <p class="mt-8 text-center text-[12px] text-slate-600 min-h-[1.25rem]" aria-live="polite">
+                <template x-if="hovered">
+                    <span><span class="font-semibold" x-text="islands[hovered].nama"></span> &middot; <span x-text="islands[hovered].provinsi"></span></span>
+                </template>
+                <template x-if="!hovered">
+                    <span class="text-slate-500">Arahkan kursor ke pulau untuk melihat jumlah provinsi.</span>
+                </template>
+            </p>
+
+            {{-- Keyboard path to the same hover state the map offers. --}}
+            <ul class="mt-4 flex flex-wrap justify-center gap-1.5">
                 @foreach([
                     'sumatera' => 'Sumatera',
                     'jawa' => 'Jawa',
                     'kalimantan' => 'Kalimantan',
                     'sulawesi' => 'Sulawesi',
-                    'nusatenggara' => 'Bali & NT',
+                    'nusatenggara' => 'Bali dan NT',
                     'maluku' => 'Maluku',
-                    'papua' => 'Papua'
-                ] as $k => $label)
-                    <button
-                        type="button"
-                        @mouseenter="setHover('{{ $k }}')"
-                        @mouseleave="leaveHover('{{ $k }}')"
-                        @click="setHover('{{ $k }}')"
-                        :class="hovered === '{{ $k }}' ? 'bg-[#0f172a] text-[#e6ff94] border-[#0f172a] shadow-xs' : 'bg-white/80 text-slate-600 border-slate-200/90 hover:bg-white hover:text-slate-900'"
-                        class="px-2.5 py-1 rounded-lg border text-[11px] font-semibold transition-colors duration-150 cursor-pointer backdrop-blur-xs"
-                    >
-                        {{ $label }}
-                    </button>
+                    'papua' => 'Papua',
+                ] as $key => $label)
+                    <li>
+                        <button type="button"
+                                @mouseenter="setHover('{{ $key }}')" @mouseleave="leaveHover('{{ $key }}')"
+                                @focus="setHover('{{ $key }}')" @blur="leaveHover('{{ $key }}')"
+                                :class="hovered === '{{ $key }}' ? 'bg-[#0f172a] text-[#e6ff94] border-[#0f172a]' : 'bg-white text-slate-700 border-slate-300 hover:border-slate-400'"
+                                class="min-h-9 px-2.5 rounded-md border text-[12px] font-semibold transition-colors focus-ring">
+                            {{ $label }}
+                        </button>
+                    </li>
                 @endforeach
-            </div>
-            <div class="flex items-center gap-2 text-[10px] text-slate-400 font-mono tracking-tight">
-                <svg class="w-3 h-3 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <line x1="12" y1="16" x2="12" y2="12" />
-                    <line x1="12" y1="8" x2="12.01" y2="8" />
-                </svg>
-                <span>Arahkan kursor pada pulau atau pilih tombol wilayah untuk eksplorasi interaktif 3D</span>
-            </div>
+            </ul>
         </div>
-    </div>
+    </aside>
 </div>
 @endsection
