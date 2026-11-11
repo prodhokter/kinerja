@@ -15,9 +15,12 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         // Nginx terminates TLS and forwards X-Forwarded-Proto; trust it so
-        // generated URLs and redirects use https instead of http.
+        // generated URLs and redirects use https instead of http. Production
+        // runs in Docker, where the request arrives from the bridge gateway
+        // inside 172.16.0.0/12 rather than from loopback. The callback runs
+        // before the config repository is bound, so these stay literal.
         $middleware->trustProxies(
-            at: ['127.0.0.1', '::1'],
+            at: ['127.0.0.1', '::1', '172.16.0.0/12'],
             headers: Request::HEADER_X_FORWARDED_FOR
                 | Request::HEADER_X_FORWARDED_HOST
                 | Request::HEADER_X_FORWARDED_PORT
