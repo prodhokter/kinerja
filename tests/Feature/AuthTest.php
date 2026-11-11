@@ -12,11 +12,10 @@ test('login page renders successfully with 3 login pathways', function () {
     $response = $this->get(route('login'));
 
     $response->assertStatus(200)
-        ->assertSee('Masuk akun')
-        ->assertSee('Masuk dengan Google')
-        ->assertSee('Kirim kode')
-        ->assertSee('Lanjut tanpa akun')
-        ->assertSee('Wilayah pilot');
+        ->assertSee('Masuk Akun')
+        ->assertSee('Masuk dengan Akun Google')
+        ->assertSee('Kirim Kode OTP')
+        ->assertSee('Jelajah sebagai Tamu');
 });
 
 test('guest mode sets session and redirects to home', function () {
