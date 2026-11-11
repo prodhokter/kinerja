@@ -1,11 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" width="400" height="120">
-    <title>Kinerja</title>
-    <!-- K Monogram Symbol (Pillar of Performance) -->
-    <g transform="translate(14, 12) scale(0.38)">
-        <path fill="#0f172a" fill-rule="evenodd" d="M68 55C61.37 55 56 60.37 56 67V211C56 217.63 61.37 223 68 223H92C98.63 223 104 217.63 104 211V163L152 211C156.69 215.69 163.31 215.69 168 211L196 183C200.69 178.31 200.69 171.69 196 167L152 123L196 79C200.69 74.31 200.69 67.69 196 63L168 35C163.31 30.31 156.69 30.31 152 35L104 83V67C104 60.37 98.63 55 92 55H68ZM126 125A14 14 0 1 0 126 153A14 14 0 1 0 126 125Z"/>
-    </g>
-    <!-- Brand Name "Kinerja" Wordmark -->
-    <text x="125" y="72" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-size="38" font-weight="800" fill="#0f172a" letter-spacing="-1">Kinerja</text>
-    <rect x="285" y="44" width="76" height="24" rx="12" fill="#e6ff94"/>
-    <text x="300" y="60" font-family="'Geist Mono', monospace" font-size="11" font-weight="700" fill="#0f172a">PUBLIK</text>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="120" viewBox="0 0 400 120"><title>Kinerja</title><g><path fill="#0f172a" fill-rule="evenodd" d="M68 55C61.37 55 56 60.37 56 67V211C56 217.63 61.37 223 68 223H92C98.63 223 104 217.63 104 211V163L152 211C156.69 215.69 163.31 215.69 168 211L196 183C200.69 178.31 200.69 171.69 196 167L152 123L196 79C200.69 74.31 200.69 67.69 196 63L168 35C163.31 30.31 156.69 30.31 152 35L104 83V67C104 60.37 98.63 55 92 55H68ZM126 125A14 14 0 1 0 126 153A14 14 0 1 0 126 125Z" transform="translate(14, 12) scale(0.38)"/></g><text x="125" y="72" fill="#0f172a" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-size="38" font-weight="800" letter-spacing="-1">Kinerja</text><rect width="76" height="24" x="285" y="44" fill="#e6ff94" rx="12"/><text x="300" y="60" fill="#0f172a" font-family="'Geist Mono', monospace" font-size="11" font-weight="700">PUBLIK</text></svg>
