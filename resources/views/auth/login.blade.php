@@ -236,58 +236,208 @@
         </div>
     </div>
 
-    {{-- SISI KANAN: PETA INDONESIA 3D INTERAKTIF (Zoom Out / Scale Hover Effect) --}}
-    <div class="hidden lg:flex lg:w-1/2 min-h-screen bg-[#f0f4f8] items-center justify-center p-8 xl:p-12 relative overflow-hidden select-none border-l border-slate-200/60"
+        {{-- SISI KANAN: PETA INDONESIA 3D DENGAN ORNAMEN KARTOGRAFI & INTERAKSI LENGKAP --}}
+    <div class="hidden lg:flex lg:w-1/2 min-h-screen bg-[#f0f4f8] flex-col justify-between p-8 xl:p-10 relative overflow-hidden select-none border-l border-slate-200/80"
          x-data="{
              hovered: null,
-             islandNames: {
-                 kalimantan: 'Pulau Kalimantan',
-                 sumatera: 'Pulau Sumatera',
-                 jawa: 'Pulau Jawa',
-                 sulawesi: 'Pulau Sulawesi',
-                 papua: 'Pulau Papua',
-                 maluku: 'Kepulauan Maluku',
-                 nusatenggara: 'Bali &amp; Nusa Tenggara'
+             islandData: {
+                 kalimantan: {
+                     name: 'Pulau Kalimantan',
+                     provinces: '5 Provinsi (Kalbar, Kalteng, Kalsel, Kaltim, Kaltara)',
+                     status: 'Pemantauan Aktif',
+                     coord: '0.9619° S, 114.5548° E',
+                     coverage: '100% Wilayah Terpetakan'
+                 },
+                 sumatera: {
+                     name: 'Pulau Sumatera',
+                     provinces: '10 Provinsi (Aceh, Sumut, Sumbar, Riau, Jambi, Sumsel, Bengkulu, Lampung, Babel, Kepri)',
+                     status: 'Pemantauan Aktif',
+                     coord: '0.5897° N, 101.3431° E',
+                     coverage: '100% Wilayah Terpetakan'
+                 },
+                 jawa: {
+                     name: 'Pulau Jawa',
+                     provinces: '6 Provinsi (Banten, DKI Jakarta, Jawa Barat, Jawa Tengah, DI Yogyakarta, Jawa Timur)',
+                     status: 'Pemantauan Aktif',
+                     coord: '7.6145° S, 110.7122° E',
+                     coverage: '100% Wilayah Terpetakan'
+                 },
+                 sulawesi: {
+                     name: 'Pulau Sulawesi',
+                     provinces: '6 Provinsi (Sulut, Gorontalo, Sulteng, Sulbar, Sulsel, Sultra)',
+                     status: 'Pemantauan Aktif',
+                     coord: '1.4300° S, 121.4456° E',
+                     coverage: '100% Wilayah Terpetakan'
+                 },
+                 papua: {
+                     name: 'Pulau Papua',
+                     provinces: '6 Provinsi (Papua, Papua Barat, Papua Selatan, Papua Tengah, Papua Pegunungan, Papua Barat Daya)',
+                     status: 'Pemantauan Aktif',
+                     coord: '4.2699° S, 138.0804° E',
+                     coverage: '100% Wilayah Terpetakan'
+                 },
+                 maluku: {
+                     name: 'Kepulauan Maluku',
+                     provinces: '2 Provinsi (Maluku &amp; Maluku Utara)',
+                     status: 'Pemantauan Aktif',
+                     coord: '3.2385° S, 130.1453° E',
+                     coverage: '100% Wilayah Terpetakan'
+                 },
+                 nusatenggara: {
+                     name: 'Bali &amp; Nusa Tenggara',
+                     provinces: '3 Provinsi (Bali, Nusa Tenggara Barat, Nusa Tenggara Timur)',
+                     status: 'Pemantauan Aktif',
+                     coord: '8.6574° S, 115.2167° E',
+                     coverage: '100% Wilayah Terpetakan'
+                 }
              },
              mouseX: 0,
              mouseY: 0,
              handleMouseMove(e) {
                  const rect = this.$el.getBoundingClientRect();
-                 this.mouseX = ((e.clientX - rect.left) / rect.width - 0.5) * 12;
-                 this.mouseY = ((e.clientY - rect.top) / rect.height - 0.5) * -12;
+                 this.mouseX = ((e.clientX - rect.left) / rect.width - 0.5) * 10;
+                 this.mouseY = ((e.clientY - rect.top) / rect.height - 0.5) * -10;
              }
          }"
          @mousemove="handleMouseMove($event)"
          @mouseleave="mouseX = 0; mouseY = 0; hovered = null">
 
-        {{-- Interactive Hover Floating Badge --}}
-        <div class="absolute top-10 left-1/2 -translate-x-1/2 z-20 pointer-events-none transition-all duration-300"
-             :class="hovered ? 'opacity-100 -translate-y-0 scale-100' : 'opacity-0 translate-y-2 scale-95'">
-            <div class="px-4 py-2 rounded-full bg-[#0f172a] text-white shadow-xl text-xs font-bold flex items-center gap-2 border border-slate-800/80">
-                <span class="w-2 h-2 rounded-full bg-[#e6ff94] animate-pulse"></span>
-                <span x-html="hovered ? islandNames[hovered] : ''"></span>
+        {{-- BACKGROUND CARTOGRAPHIC TEXTURE & MARKS --}}
+        {{-- Subtle Dot Matrix Grid --}}
+        <div class="absolute inset-0 bg-[radial-gradient(#0f172a10_1px,transparent_1px)] [background-size:28px_28px] pointer-events-none"></div>
+
+        {{-- Concentric Range Rings Centered on Map Area --}}
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[520px] rounded-full border border-slate-300/40 pointer-events-none"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] h-[340px] rounded-full border border-dashed border-slate-300/30 pointer-events-none"></div>
+
+        {{-- Corner Geographic Reticles & Coordinates --}}
+        <div class="absolute inset-6 pointer-events-none text-slate-400 font-mono text-[10px] leading-none select-none">
+            {{-- Top Left --}}
+            <div class="absolute top-0 left-0 flex items-center gap-1.5">
+                <span class="text-slate-500 font-bold">+</span>
+                <span>06°04' LU (Sabang)</span>
+            </div>
+            {{-- Top Right --}}
+            <div class="absolute top-0 right-0 flex items-center gap-1.5">
+                <span>141°01' BT (Merauke)</span>
+                <span class="text-slate-500 font-bold">+</span>
+            </div>
+            {{-- Bottom Left --}}
+            <div class="absolute bottom-0 left-0 flex items-center gap-1.5">
+                <span class="text-slate-500 font-bold">+</span>
+                <span>095°00' BT (P. Weh)</span>
+            </div>
+            {{-- Bottom Right --}}
+            <div class="absolute bottom-0 right-0 flex items-center gap-1.5">
+                <span>11°00' LS (P. Rote)</span>
+                <span class="text-slate-500 font-bold">+</span>
             </div>
         </div>
 
-        {{-- 3D Isometric Viewport Container --}}
-        <div class="w-full max-w-2xl relative transition-transform duration-500 ease-out py-12"
-             :style="'transform: perspective(1000px) rotateX(' + (24 + mouseY) + 'deg) rotateY(' + (mouseX) + 'deg) rotateZ(-2deg);'">
+        {{-- 1. TOP HEADER ORNAMENTS: NATIONAL BADGE & COMPASS ROSE --}}
+        <div class="w-full flex items-center justify-between z-10">
+            <div class="flex items-center gap-3">
+                <div class="relative flex items-center justify-center">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                    <span class="w-4 h-4 rounded-full bg-emerald-500/20 absolute animate-ping"></span>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-slate-900 font-mono tracking-wider uppercase">Wilayah NKRI</span>
+                        <span class="text-[9px] font-mono font-semibold bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">Sistem Aktif</span>
+                    </div>
+                    <span class="text-[10px] text-slate-500 font-mono">0°47' S, 113°55' E • 38 Provinsi • 514 Daerah</span>
+                </div>
+            </div>
 
-            {{-- 3D Base Pedestal Platform --}}
-            <div class="absolute inset-x-0 -bottom-6 h-full bg-slate-200/50 rounded-3xl -z-10 transform translate-y-8 filter blur-md"></div>
-            <div class="absolute inset-0 bg-white/70 backdrop-blur-md rounded-3xl border border-slate-200/80 shadow-2xl -z-10"></div>
+            {{-- Cartographic North Compass Rose --}}
+            <div class="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-white/80 backdrop-blur-md border border-slate-200/90 shadow-2xs">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                    <polygon points="12,2 15,10 12,8 9,10" fill="#0f172a" />
+                    <polygon points="12,22 9,14 12,16 15,14" fill="#94a3b8" />
+                    <circle cx="12" cy="12" r="1.5" fill="#e6ff94" />
+                </svg>
+                <div class="text-left font-mono">
+                    <span class="block text-[10px] font-bold text-slate-800 leading-tight">U / NORTH</span>
+                    <span class="block text-[8px] text-slate-400 leading-none">WGS-84</span>
+                </div>
+            </div>
+        </div>
 
-            {{-- SVG Interactive Indonesia 3D Map --}}
-            <div class="p-6 sm:p-8">
-                <svg viewBox="0 0 700 240" class="w-full h-auto overflow-visible" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <filter id="map-island-shadow" x="-20%" y="-20%" width="140%" height="140%" filterUnits="userSpaceOnUse">
-                            <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.12" />
-                        </filter>
-                    </defs>
+        {{-- 2. CENTER STAGE: CARTOGRAPHIC INSPECTION HUD & 3D ISOMETRIC PEDESTAL --}}
+        <div class="w-full flex flex-col items-center justify-center my-auto py-2 z-10">
+            {{-- Interactive HUD Panel (Always Visible: Global NKRI Overview by Default, Deep Dive on Island Hover) --}}
+            <div class="w-full max-w-lg mb-4 transition-all duration-300">
+                <div class="p-4 rounded-2xl bg-[#0f172a] text-white shadow-xl border border-slate-800 backdrop-blur-md space-y-2">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full" :class="hovered ? 'bg-[#e6ff94] animate-pulse' : 'bg-emerald-400'"></span>
+                            <span class="text-xs font-extrabold tracking-tight font-display"
+                                  :class="hovered ? 'text-[#e6ff94]' : 'text-white'"
+                                  x-text="hovered ? islandData[hovered].name : 'Cakupan Pengawasan Distribusi Nasional'"></span>
+                        </div>
+                        <span class="text-[9px] font-mono font-bold bg-white/10 px-2 py-0.5 rounded text-slate-300"
+                              x-text="hovered ? islandData[hovered].status : '38 Provinsi Terhubung'"></span>
+                    </div>
 
-                    
-            {{-- Sumatera --}}
+                    <p class="text-xs text-slate-300 leading-relaxed"
+                       x-text="hovered ? islandData[hovered].provinces : 'Pemantauan real-time penyaluran bantuan sosial di seluruh pulau dan perbatasan Indonesia untuk akuntabilitas publik tanpa manipulasi.'"></p>
+
+                    <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-[10px] font-mono text-slate-400">
+                        <span x-text="hovered ? 'Koordinat Sentral:' : 'Status Data:'"></span>
+                        <span class="text-[#e6ff94] font-semibold"
+                              x-text="hovered ? islandData[hovered].coord : '100% Wilayah Terpetakan &bull; Terbuka untuk Warga'"></span>
+                    </div>
+                </div>
+            </div>
+
+            {{-- 3D Isometric Viewport Container --}}
+            <div class="w-full max-w-2xl relative transition-transform duration-500 ease-out py-8 sm:py-10"
+                 :style="'transform: perspective(1000px) rotateX(' + (22 + mouseY) + 'deg) rotateY(' + (mouseX) + 'deg) rotateZ(-2.5deg);'">
+
+                {{-- 3D Pedestal Base Shadows & Elevation Layers --}}
+                <div class="absolute inset-x-2 -bottom-6 h-full bg-slate-400/25 rounded-3xl -z-20 transform translate-y-10 filter blur-xl"></div>
+                <div class="absolute inset-x-1 -bottom-3 h-full bg-slate-300/50 rounded-3xl -z-10 transform translate-y-4"></div>
+
+                {{-- Pedestal Surface with Cartographic Coordinates & Reticles --}}
+                <div class="absolute inset-0 bg-white/85 backdrop-blur-md rounded-3xl border border-slate-200 shadow-2xl -z-10 overflow-hidden">
+                    {{-- Grid lines on the platform --}}
+                    <div class="absolute inset-0 bg-[linear-gradient(to_right,#0f172a08_1px,transparent_1px),linear-gradient(to_bottom,#0f172a08_1px,transparent_1px)] bg-[size:28px_28px] pointer-events-none"></div>
+
+                    {{-- Corner Reticle Brackets (┌ ┐ └ ┘) --}}
+                    <div class="absolute top-3 left-3 w-3 h-3 border-t-2 border-l-2 border-slate-300 pointer-events-none"></div>
+                    <div class="absolute top-3 right-3 w-3 h-3 border-t-2 border-r-2 border-slate-300 pointer-events-none"></div>
+                    <div class="absolute bottom-3 left-3 w-3 h-3 border-b-2 border-l-2 border-slate-300 pointer-events-none"></div>
+                    <div class="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-slate-300 pointer-events-none"></div>
+
+                    {{-- Top Edge Longitude Ticks --}}
+                    <div class="absolute top-2 inset-x-8 flex justify-between text-[8px] font-mono text-slate-400 pointer-events-none">
+                        <span>95°E</span>
+                        <span>105°E</span>
+                        <span>115°E</span>
+                        <span>125°E</span>
+                        <span>135°E</span>
+                        <span>141°E</span>
+                    </div>
+
+                    {{-- Dotted Equator Line Across the Platform --}}
+                    <div class="absolute top-[48%] inset-x-0 border-b border-dashed border-slate-300/90 flex items-center justify-end pr-4 pointer-events-none">
+                        <span class="text-[8px] font-mono text-slate-500 bg-white/90 px-2 py-0.5 rounded border border-slate-200/60 shadow-3xs">
+                            Garis Khatulistiwa (0°00')
+                        </span>
+                    </div>
+                </div>
+
+                {{-- SVG Interactive Indonesia 3D Map --}}
+                <div class="p-6 sm:p-8">
+                    <svg viewBox="0 0 700 240" class="w-full h-auto overflow-visible" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <filter id="map-island-shadow" x="-20%" y="-20%" width="140%" height="140%" filterUnits="userSpaceOnUse">
+                                <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.14" />
+                            </filter>
+                        </defs>
+
+                        {{-- Sumatera --}}
             <g class="cursor-pointer transition-transform duration-300 origin-center group"
                @mouseenter="hovered = 'sumatera'"
                @mouseleave="hovered = null"
@@ -427,15 +577,56 @@
                       stroke-width="1"
                       filter="url(#map-island-shadow)" />
             </g>
-                </svg>
+                    </svg>
+                </div>
+
+                {{-- Cartographic Scale Bar (Ornamen Platform Kiri Bawah) --}}
+                <div class="absolute bottom-3 left-8 flex items-center gap-2 text-[9px] font-mono text-slate-500 pointer-events-none">
+                    <div class="flex items-center">
+                        <div class="w-8 h-1 bg-[#0f172a]"></div>
+                        <div class="w-8 h-1 bg-slate-300"></div>
+                    </div>
+                    <span>Skala 0 — 1000 km</span>
+                </div>
+
+                {{-- Projection Stamp (Ornamen Platform Kanan Bawah) --}}
+                <div class="absolute bottom-3 right-8 text-[9px] font-mono text-slate-400 pointer-events-none">
+                    <span>Proyeksi: Isometrik 3D • EPSG:4326</span>
+                </div>
             </div>
         </div>
 
-        {{-- Quiet Help Hint --}}
-        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 text-center pointer-events-none">
-            <span class="text-[11px] font-medium text-slate-400 bg-white/60 backdrop-blur-xs px-3 py-1 rounded-full border border-slate-200/60">
-                Arahkan kursor pada pulau untuk melihat efek 3D
-            </span>
+        {{-- 3. BOTTOM CONTROL STRIP: REGION CHIPS & INSTRUCTION GUIDE --}}
+        <div class="w-full flex flex-col items-center gap-2.5 z-10">
+            <div class="flex items-center justify-center gap-1.5 flex-wrap">
+                @foreach([
+                    'sumatera' => 'Sumatera',
+                    'jawa' => 'Jawa',
+                    'kalimantan' => 'Kalimantan',
+                    'sulawesi' => 'Sulawesi',
+                    'nusatenggara' => 'Bali & NT',
+                    'maluku' => 'Maluku',
+                    'papua' => 'Papua'
+                ] as $k => $label)
+                    <button
+                        type="button"
+                        @mouseenter="hovered = '{{ $k }}'"
+                        @mouseleave="hovered = null"
+                        :class="hovered === '{{ $k }}' ? 'bg-[#0f172a] text-[#e6ff94] border-[#0f172a] shadow-xs scale-105' : 'bg-white/80 text-slate-600 border-slate-200/90 hover:bg-white hover:text-slate-900'"
+                        class="px-2.5 py-1 rounded-lg border text-[11px] font-semibold transition-all duration-200 cursor-pointer backdrop-blur-xs"
+                    >
+                        {{ $label }}
+                    </button>
+                @endforeach
+            </div>
+            <div class="flex items-center gap-2 text-[10px] text-slate-400 font-mono tracking-tight">
+                <svg class="w-3 h-3 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="16" x2="12" y2="12" />
+                    <line x1="12" y1="8" x2="12.01" y2="8" />
+                </svg>
+                <span>Arahkan kursor pada pulau atau pilih tombol wilayah untuk eksplorasi interaktif 3D</span>
+            </div>
         </div>
     </div>
 </div>
