@@ -50,3 +50,17 @@ public/og-image.svg
 *.pptx
 make_ppt.py
 
+
+# Proposal build artifacts (local only)
+/submission/
+/proposal-build/
+
+# Local planning and agent scratch files (not part of the submission)
+/LOMBA.md
+/Logo-PENS_PNG.png
+/[WIA] Template Proposal.docx
+/ppt/
+/.docker-tmp/
+/.needmcp/
+/.playwright-mcp/
+/.superpowers/

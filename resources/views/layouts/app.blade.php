@@ -187,13 +187,7 @@
                 <span x-show="!sidebarCollapsed" x-cloak class="truncate">Cek Tiket</span>
             </a>
 
-            {{-- Khusus Admin & Auditor --}}
-            @if($isAdmin)
-                <div class="pt-3 pb-1 px-3" x-show="!sidebarCollapsed" x-cloak>
-                    <span class="text-[10px] font-bold text-amber-600 uppercase tracking-wider font-mono">Auditor &amp; Admin</span>
-                </div>
-                <div class="h-px bg-slate-200/80 my-2" x-show="sidebarCollapsed" x-cloak></div>
-
+            {{-- Layanan publik: Peta, Scorecard, Data --}}
                 {{-- 6. Peta Anomali --}}
                 <a href="{{ route('map.index') }}"
                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all {{ request()->routeIs('map.*') ? 'bg-[#0f172a] text-[#e6ff94] shadow-xs' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}"
@@ -223,7 +217,6 @@
                     </svg>
                     <span x-show="!sidebarCollapsed" x-cloak class="truncate">Data Publik</span>
                 </a>
-            @endif
         </nav>
 
         {{-- Sidebar Footer: Auth / User Status --}}
@@ -312,33 +305,21 @@
                     <a href="{{ route('report.dispute.create') }}" class="block px-3 py-2 rounded-lg text-xs font-bold {{ request()->routeIs('report.dispute.*') ? 'bg-[#0f172a] text-[#e6ff94]' : 'text-slate-700 hover:bg-slate-100' }}">Sanggah Bansos</a>
                     <a href="{{ route('ticket.index') }}" class="block px-3 py-2 rounded-lg text-xs font-bold text-slate-700 hover:bg-slate-100">Cek Tiket</a>
 
-                    @if($isAdmin)
-                        <div class="pt-3 pb-1 px-3 text-[10px] font-bold text-amber-600 uppercase tracking-wider font-mono">Auditor &amp; Admin</div>
+                    <div class="pt-3 pb-1 px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider font-mono">Layanan Publik</div>
                         <a href="{{ route('map.index') }}" class="block px-3 py-2 rounded-lg text-xs font-bold {{ request()->routeIs('map.*') ? 'bg-[#0f172a] text-[#e6ff94]' : 'text-slate-700 hover:bg-slate-100' }}">Peta Anomali</a>
                         <a href="{{ route('scorecard.index') }}" class="block px-3 py-2 rounded-lg text-xs font-bold {{ request()->routeIs('scorecard.*') ? 'bg-[#0f172a] text-[#e6ff94]' : 'text-slate-700 hover:bg-slate-100' }}">Scorecard SLA</a>
                         <a href="{{ route('data.index') }}" class="block px-3 py-2 rounded-lg text-xs font-bold {{ request()->routeIs('data.*') ? 'bg-[#0f172a] text-[#e6ff94]' : 'text-slate-700 hover:bg-slate-100' }}">Data Publik</a>
+                    @if($isAdmin)
                         <a href="/admin" class="block px-3 py-2 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 mt-1">Panel Admin &rarr;</a>
                     @endif
                 </div>
             </div>
-            <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
-                @auth
-                    <div class="flex items-center gap-2">
-                        <div class="w-7 h-7 rounded-full bg-[#0f172a] text-[#e6ff94] font-bold text-xs flex items-center justify-center">
-                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                        </div>
-                        <span class="text-xs font-bold text-slate-800 truncate max-w-[110px]">{{ auth()->user()->name }}</span>
-                    </div>
-                    <form action="{{ route('logout') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="text-xs font-bold text-rose-600">Keluar</button>
-                    </form>
-                @else
-                    <a href="{{ route('login') }}" class="text-xs font-bold text-slate-900 bg-slate-100 px-3 py-1.5 rounded-lg hover:bg-slate-200">
+            <div class="pt-3 border-t border-slate-100">
+                @guest
+                    <a href="{{ route('login') }}" class="block w-full text-center text-xs font-bold text-slate-900 bg-slate-100 px-3 py-2 rounded-lg hover:bg-slate-200">
                         Masuk Akun
                     </a>
-                    <span class="text-[10px] font-mono text-slate-400">Mode Tamu</span>
-                @endauth
+                @endguest
             </div>
         </div>
     </div>
@@ -397,7 +378,6 @@
                     <span class="text-[10px] font-bold text-slate-700 mt-1">Tiket</span>
                 </a>
 
-                @if($isAdmin)
                 {{-- 3. Scorecard SLA --}}
                 <a href="{{ route('scorecard.index') }}" class="flex flex-col items-center group -mt-5">
                     <div class="w-10 h-10 rounded-full bg-white border border-slate-200/90 shadow-2xs flex items-center justify-center text-slate-800 group-hover:bg-[#e6ff94] transition-colors">
@@ -417,7 +397,6 @@
                     </div>
                     <span class="text-[10px] font-bold text-slate-700 mt-1">Data</span>
                 </a>
-                @endif
             </div>
 
             {{-- Main Dock Bar --}}
@@ -450,23 +429,13 @@
                     </svg>
                 </button>
 
-                @if($isAdmin)
-                {{-- 4. Peta Anomali (Admin) --}}
+                {{-- 4. Peta Anomali --}}
                 <a href="{{ route('map.index') }}" class="flex flex-col items-center justify-center flex-1 py-1 rounded-full text-[10px] font-bold transition-all {{ request()->routeIs('map.*') ? 'text-slate-900 font-extrabold' : 'text-slate-500 hover:text-slate-800' }}">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
                     </svg>
                     <span>Peta</span>
                 </a>
-                @else
-                {{-- 4. Sanggah Bansos (Warga) --}}
-                <a href="{{ route('report.dispute.create') }}" class="flex flex-col items-center justify-center flex-1 py-1 rounded-full text-[10px] font-bold transition-all {{ request()->routeIs('report.dispute.*') ? 'text-slate-900 font-extrabold' : 'text-slate-500 hover:text-slate-800' }}">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                    </svg>
-                    <span>Sanggah</span>
-                </a>
-                @endif
 
                 {{-- 5. Lapor Pungli --}}
                 <a href="{{ route('report.extortion.create') }}" class="flex flex-col items-center justify-center flex-1 py-1 rounded-full text-[10px] font-bold transition-all {{ request()->routeIs('report.extortion.*') ? 'text-slate-900 font-extrabold' : 'text-slate-500 hover:text-slate-800' }}">

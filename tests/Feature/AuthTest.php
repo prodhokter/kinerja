@@ -150,21 +150,22 @@ test('admin login rejects invalid password', function () {
     $this->assertFalse(Auth::check());
 });
 
-test('citizen user only sees citizen navigation menus', function () {
+test('citizen user sees public navigation but no admin panel link', function () {
     $user = User::factory()->create([
         'role' => UserRole::Citizen,
     ]);
 
     $response = $this->actingAs($user)->get(route('tracker.index'));
 
+    // Map, scorecard, and data are public transparency pages; every role sees them.
     $response->assertStatus(200)
         ->assertSee(route('tracker.index'))
         ->assertSee(route('report.extortion.create'))
         ->assertSee(route('report.dispute.create'))
         ->assertSee(route('ticket.index'))
-        ->assertDontSee(route('map.index'))
-        ->assertDontSee(route('scorecard.index'))
-        ->assertDontSee(route('data.index'))
+        ->assertSee(route('map.index'))
+        ->assertSee(route('scorecard.index'))
+        ->assertSee(route('data.index'))
         ->assertDontSee('Buka Panel Admin');
 });
 

@@ -38,9 +38,10 @@ Bantuan sosial adalah hak konstitusional warga negara. Namun di lapangan, masyar
 ```mermaid
 flowchart TD
     subgraph Warga["Pengguna / Warga"]
-        A[Akses Website Kinerja] --> B{Pilih Modus Akses}
-        B -->|Jelajah Bebas| C[Mode Tamu / Tanpa Login]
-        B -->|Simpan Riwayat| D[Login Google OAuth / Surel OTP Resend]
+        A[Akses Website Kinerja] --> B{Autentikasi}
+        B -->|NIK 16 digit| C[Login Warga]
+        B -->|Google OAuth / OTP Surel| C
+        B -->|Jelajah sebagai Tamu| D[Mode Tamu]
         C --> E[Menu Layanan Kinerja]
         D --> E
     end
@@ -335,7 +336,8 @@ Kinerja dirancang 100% independen tanpa ketergantungan pada vendor PaaS tertutup
 | **Portal Tiket** | `/tiket`, `/tiket/{ticket}` | Aktif | Status publik tanpa membuka isi aduan; sesi terotentikasi kode rahasia untuk interaksi tindak lanjut. |
 | **Scorecard SLA** | `/scorecard`, `/scorecard/{slug}` | Aktif | Leaderboard kepatuhan 72j/14h, grafik benchmark Chart.js, nilai mutu A/B/C/D. |
 | **Data Publik** | `/data`, `/data/unduh/{dataset}` | Aktif | Metodologi transparan, streaming ekspor CSV dataset SLA & Anomali wilayah tersanitasi. |
-| **Autentikasi 3-Jalur** | `/masuk`, `/auth/*` | Aktif | Login Google OAuth, verifikasi surel OTP Resend API (6 digit input box), serta Mode Tamu instan. |
+| **Autentikasi Berperan** | `/masuk`, `/auth/*` | Aktif | Login warga via NIK 16 digit tanpa kata sandi, admin via kredensial, Google OAuth, OTP surel, dan Mode Tamu. Halaman login memuat peta Indonesia 3D interaktif. |
+| **Navigasi** | semua halaman | Aktif | Semua peran melihat Beranda, Lacak, Lapor, Sanggah, Cek Tiket, Peta, Scorecard SLA, dan Data Publik. Sidebar desktop dapat diciutkan; dock mobile memakai fan menu. Tautan Panel Admin hanya tampil untuk admin/auditor. |
 | **Panel Admin** | `/admin` | Aktif | Panel Filament dengan autentikasi peran, resource Resi, dan moderasi Aduan. |
 | **Ketentuan & Privasi**| `/tentang`, `/ketentuan` | Aktif | Kebijakan kepatuhan privasi UU PDP No. 27/2022 dan Ketentuan Layanan legal. |
 
@@ -368,16 +370,19 @@ Buka [https://kinerja.web.id/peta](https://kinerja.web.id/peta):
    - Kode Rahasia: `BMS01-TEST-CODE`
    - Coba kirimkan tanggapan balasan pada form di bagian bawah.
 
-### D. Uji Masuk Akun 3-Jalur
+### D. Uji Masuk Akun Berperan
 Buka [https://kinerja.web.id/masuk](https://kinerja.web.id/masuk):
-- **Jelajah sebagai Tamu**: Masuk langsung tanpa login akun.
-- **Masuk dengan Akun Google**: Redirect resmi ke OAuth 2.0 Google.
-- **Masuk via Surel OTP**: Masukkan alamat email, terima kode 6 digit via Resend API, dan isi pada 6 kotak digit terfragmentasi otomatis.
+- **Masyarakat (NIK)**: Masukkan 16 digit NIK apa pun; akun warga dibuat otomatis dan NIK disimpan sebagai hash. Tersedia tautan NIK demo PKH dan BPNT di bawah kolom isian.
+- **Administrator**: Masuk dengan username/email admin dan kata sandi. Akun demo: `admin@hakwarga.test` / `admin123`.
+- **Jelajah sebagai Tamu**: Masuk tanpa akun, sesi tamu disimpan pada session.
+- **Opsi Lainnya**: Masuk dengan Akun Google atau kode OTP surel 6 digit.
+
+> Catatan: pengunjung yang belum masuk akan diarahkan ke halaman login. Halaman login memuat peta Indonesia 3D interaktif dengan sorotan per pulau.
 
 ### E. Uji Panel Admin Filament
 Buka [https://kinerja.web.id/admin](https://kinerja.web.id/admin):
 - **Email:** `admin@hakwarga.test`
-- **Password:** `hakwarga2026`
+- **Password:** `admin123`
 - Kelola data penyaluran pada menu **Shipments** dan tinjau aduan warga pada menu **Reports**.
 
 ---
@@ -389,7 +394,9 @@ Buka [https://kinerja.web.id/admin](https://kinerja.web.id/admin):
 3. **Data Masking Otomatis:** Nama dan alamat penerima bantuan otomatis disamarkan (`S*** W***`) dan atribut `$hidden = ['nik_hash']` diaktifkan pada model Eloquent.
 4. **PiiMasker Sanitizer:** Deskripsi aduan warga otomatis dipindai ekspresi reguler untuk menyensor deretan 16 digit NIK dan nomor kontak sebelum disimpan.
 5. **Autentikasi Tiket Kriptografis:** Isi laporan dirahasiakan dari publik. Pembacaan detail laporan memerlukan kode rahasia 12 karakter yang diverifikasi menggunakan `hash_equals(sha256)`.
-6. **Data Simulasi Bertanda:** Seluruh data penerima perorangan menggunakan data sintetis dengan tanda `is_simulated = true`.
+6. **Login Warga Tanpa Kata Sandi:** Warga masuk dengan NIK 16 digit; NIK langsung di-hash `HMAC-SHA256` dan hanya `nik_hash` yang disimpan pada tabel `users`. Atribut `nik_hash` masuk daftar `$hidden`, dan NIK yang ditampilkan pada antarmuka selalu tersamar (`330211******0001`).
+7. **Enkripsi At-Rest Isi Laporan:** Kolom `reports.description` dan `report_updates.message` memakai cast `encrypted`, sehingga isi aduan tidak terbaca meski berkas basis data bocor.
+8. **Data Simulasi Bertanda:** Seluruh data penerima perorangan menggunakan data sintetis dengan tanda `is_simulated = true`.
 
 ---
 
@@ -402,7 +409,7 @@ Kinerja mematuhi standar desain profesional bebas dari elemen generik kecerdasan
 - **Hasil Pengujian Otomatis:**
   - `./vendor/bin/pint --test`: **PASS** (PSR-12 Standar Laravel).
   - `./vendor/bin/phpstan analyse`: **PASS** (Larastan Level 5 Analisis Statis Tipe).
-  - `php artisan test`: **PASS** (Unit & Feature Tests 100% hijau).
+  - `php artisan test`: **PASS** (62 tes, 364 asersi: Unit & Feature 100% hijau).
 
 ---
 
