@@ -538,7 +538,7 @@ class DemoScenarioSeeder extends Seeder
         }
 
         // 11. Demo Admin Users for Filament Panel
-        $demoPassword = bcrypt('hakwarga2026');
+        $demoPassword = bcrypt('admin123');
 
         User::updateOrCreate(
             ['email' => 'admin@hakwarga.test'],

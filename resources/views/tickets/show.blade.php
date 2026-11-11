@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+<div class="max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-8 w-full">
+    <div class="max-w-4xl space-y-6">
     <div class="flex items-center justify-between">
         <a href="{{ route('ticket.index') }}" class="inline-flex items-center gap-1.5 text-xs text-slate-700 dark:text-slate-300 hover:underline font-semibold">
             &larr; Cari nomor tiket lain
@@ -189,4 +190,5 @@
         @endif
     @endif
 </div>
+    </div>
 @endsection

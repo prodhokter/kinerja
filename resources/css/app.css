@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 [x-cloak] {
     display: none !important;
 }
@@ -8,6 +10,10 @@
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';
+
+@view-transition {
+    navigation: auto;
+}
 
 @theme {
     /* Starline Brand Colors */

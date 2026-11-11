@@ -54,6 +54,8 @@ Route::get('/og-image', fn () => view('og-image'))->name('og-image');
 // Authentication (Google OAuth + Resend OTP + Guest)
 Route::middleware('guest')->group(function () {
     Route::get('/masuk', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/masuk/nik', [AuthController::class, 'loginNik'])->name('auth.nik');
+    Route::post('/masuk/admin', [AuthController::class, 'loginAdmin'])->name('auth.admin');
     Route::get('/auth/google', [AuthController::class, 'redirectToGoogle'])->name('auth.google');
     Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
     Route::post('/auth/otp/kirim', [AuthController::class, 'sendOtp'])->name('auth.otp.send');

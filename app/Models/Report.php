@@ -43,6 +43,7 @@ class Report extends Model
         'first_response_at' => 'datetime',
         'resolved_at' => 'datetime',
         'is_simulated' => 'boolean',
+        'description' => 'encrypted',
     ];
 
     /** @return BelongsTo<Region, $this> */

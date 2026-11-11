@@ -96,3 +96,92 @@ test('authenticated user can logout', function () {
     $response->assertRedirect(route('home'));
     $this->assertFalse(Auth::check());
 });
+
+test('warga can login with valid NIK and gets authenticated as citizen', function () {
+    $nik = '3302112001990001';
+
+    $response = $this->post(route('auth.nik'), [
+        'nik' => $nik,
+    ]);
+
+    $response->assertRedirect(route('home'));
+    $this->assertTrue(Auth::check());
+    $this->assertSame(UserRole::Citizen, Auth::user()->role);
+    $this->assertNotNull(Auth::user()->nik_hash);
+});
+
+test('warga login rejects invalid NIK', function () {
+    $response = $this->post(route('auth.nik'), [
+        'nik' => '12345',
+    ]);
+
+    $response->assertSessionHasErrors(['nik']);
+    $this->assertFalse(Auth::check());
+});
+
+test('admin can login with username admin and password admin123', function () {
+    User::updateOrCreate(
+        ['email' => 'admin@hakwarga.test'],
+        [
+            'name' => 'Administrator Utama',
+            'password' => Hash::make('admin123'),
+            'role' => UserRole::SuperAdmin,
+            'email_verified_at' => now(),
+        ]
+    );
+
+    $response = $this->post(route('auth.admin'), [
+        'username' => 'admin',
+        'password' => 'admin123',
+    ]);
+
+    $response->assertRedirect(route('home'));
+    $this->assertTrue(Auth::check());
+    $this->assertSame(UserRole::SuperAdmin, Auth::user()->role);
+});
+
+test('admin login rejects invalid password', function () {
+    $response = $this->post(route('auth.admin'), [
+        'username' => 'admin',
+        'password' => 'wrongpassword',
+    ]);
+
+    $response->assertSessionHas('error');
+    $this->assertFalse(Auth::check());
+});
+
+test('citizen user only sees citizen navigation menus', function () {
+    $user = User::factory()->create([
+        'role' => UserRole::Citizen,
+    ]);
+
+    $response = $this->actingAs($user)->get(route('tracker.index'));
+
+    $response->assertStatus(200)
+        ->assertSee(route('tracker.index'))
+        ->assertSee(route('report.extortion.create'))
+        ->assertSee(route('report.dispute.create'))
+        ->assertSee(route('ticket.index'))
+        ->assertDontSee(route('map.index'))
+        ->assertDontSee(route('scorecard.index'))
+        ->assertDontSee(route('data.index'))
+        ->assertDontSee('Buka Panel Admin');
+});
+
+test('admin user sees full navigation menus including auditor and panel link', function () {
+    $admin = User::where('role', UserRole::SuperAdmin)->first() ?? User::factory()->create([
+        'role' => UserRole::SuperAdmin,
+    ]);
+
+    $response = $this->actingAs($admin)->get(route('tracker.index'));
+
+    $response->assertStatus(200)
+        ->assertSee(route('tracker.index'))
+        ->assertSee(route('report.extortion.create'))
+        ->assertSee(route('report.dispute.create'))
+        ->assertSee(route('ticket.index'))
+        ->assertSee(route('map.index'))
+        ->assertSee(route('scorecard.index'))
+        ->assertSee(route('data.index'))
+        ->assertSee('Buka Panel Admin');
+});

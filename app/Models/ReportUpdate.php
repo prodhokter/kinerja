@@ -23,6 +23,7 @@ class ReportUpdate extends Model
     protected $casts = [
         'status' => ReportStatus::class,
         'is_public' => 'boolean',
+        'message' => 'encrypted',
     ];
 
     /** @return BelongsTo<Report, $this> */

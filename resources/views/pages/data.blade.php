@@ -1,7 +1,7 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('content')
-<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+<div class="max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-8 space-y-8 w-full">
     {{-- Header: Ultra Concise --}}
     <div class="space-y-1">
         <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-display">

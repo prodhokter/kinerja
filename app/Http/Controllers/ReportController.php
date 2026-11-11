@@ -14,6 +14,7 @@ use App\Models\AidProgram;
 use App\Models\Region;
 use App\Models\Report;
 use App\Models\ReportUpdate;
+use App\Models\Shipment;
 use App\Services\PiiMasker;
 use App\Services\TicketCodeFactory;
 use Illuminate\Contracts\View\View;
@@ -33,7 +34,18 @@ class ReportController extends Controller
         $categories = ExtortionCategory::cases();
         $prefillResi = $request->query('resi');
 
-        return view('reports.extortion-create', compact('regions', 'categories', 'prefillResi'));
+        $shipment = null;
+        $prefillRegionId = null;
+        if (!empty($prefillResi)) {
+            $shipment = Shipment::with(['beneficiary.region', 'program', 'agency'])
+                ->where('receipt_code', $prefillResi)
+                ->first();
+            if ($shipment && $shipment->beneficiary) {
+                $prefillRegionId = $shipment->beneficiary->region_id;
+            }
+        }
+
+        return view('reports.extortion-create', compact('regions', 'categories', 'prefillResi', 'shipment', 'prefillRegionId'));
     }
 
     public function storeExtortion(

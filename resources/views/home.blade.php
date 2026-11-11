@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="space-y-8 py-6 sm:py-8">
+<div class="space-y-8 py-6 sm:py-8 px-4 sm:px-6 lg:px-8 xl:px-10 max-w-[1680px] mx-auto w-full">
     {{-- Hero Section: Functional Command Center --}}
-    <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section>
         <div class="starline-card p-6 sm:p-8 rounded-2xl space-y-6">
             <div class="space-y-2">
                 <h1 class="text-2xl sm:text-4xl font-extrabold text-slate-900 font-display tracking-tight">
@@ -51,7 +51,7 @@
     </section>
 
     {{-- Live Metric Strip --}}
-    <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
             <div class="starline-card p-4">
                 <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider font-mono block">Wilayah Pilot</span>
@@ -77,7 +77,7 @@
     </section>
 
     {{-- Live Data Modules: Anomali & Scorecard Side-by-Side --}}
-    <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {{-- Widget 1: Anomali Wilayah Terkini --}}
             <div class="starline-card p-5 sm:p-6 rounded-2xl flex flex-col justify-between space-y-4">
@@ -156,7 +156,7 @@
     </section>
 
     {{-- Quick Action Tiles --}}
-    <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <a href="{{ route('tracker.index') }}" class="starline-card p-4 rounded-xl flex flex-col justify-between hover:border-slate-900 transition-all">
                 <div class="space-y-1">

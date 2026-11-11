@@ -31,6 +31,7 @@ class User extends Authenticatable implements FilamentUser
         'email',
         'google_id',
         'avatar',
+        'nik_hash',
         'password',
         'role',
         'agency_id',
@@ -44,6 +45,7 @@ class User extends Authenticatable implements FilamentUser
     protected $hidden = [
         'password',
         'remember_token',
+        'nik_hash',
     ];
 
     /**

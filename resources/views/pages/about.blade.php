@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+<div class="max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-8 w-full">
+    <div class="max-w-4xl space-y-6">
     <div class="space-y-1">
         <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-display">
             Tentang Platform Kinerja
@@ -40,4 +41,5 @@
         </div>
     </div>
 </div>
+    </div>
 @endsection

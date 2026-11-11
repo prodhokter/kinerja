@@ -1,7 +1,8 @@
 @extends('layouts.app', ['title' => 'Verifikasi Kode'])
 
 @section('content')
-<div class="max-w-md mx-auto px-4 py-12 sm:py-16">
+<div class="max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-12 sm:py-16 w-full">
+    <div class="max-w-md">
     <div class="starline-card p-6 sm:p-8 bg-white/95 backdrop-blur-xl border border-slate-200/90 shadow-sm rounded-3xl"
          x-data="{
              digits: ['', '', '', '', '', ''],
@@ -152,4 +153,5 @@
         </div>
     </div>
 </div>
+    </div>
 @endsection
