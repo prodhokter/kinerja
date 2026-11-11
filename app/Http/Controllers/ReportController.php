@@ -36,7 +36,7 @@ class ReportController extends Controller
 
         $shipment = null;
         $prefillRegionId = null;
-        if (!empty($prefillResi)) {
+        if (! empty($prefillResi)) {
             $shipment = Shipment::with(['beneficiary.region', 'program', 'agency'])
                 ->where('receipt_code', $prefillResi)
                 ->first();

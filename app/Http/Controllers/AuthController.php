@@ -93,17 +93,13 @@ class AuthController extends Controller
             }
         })->first();
 
-        $isValid = false;
-        if ($user) {
-            if (Hash::check($password, $user->password)) {
-                $isValid = true;
-            } elseif ($password === 'admin123' && in_array($user->role, [UserRole::SuperAdmin, UserRole::Moderator, UserRole::AgencyOfficer], true)) {
-                $user->update(['password' => Hash::make('admin123')]);
-                $isValid = true;
-            }
+        if (! $user) {
+            return back()->withInput()->with('error', 'Kredensial Admin salah. Silakan periksa kembali username dan password.');
         }
 
-        if (! $isValid || ! $user) {
+        $isValid = Hash::check($password, $user->password);
+
+        if (! $isValid) {
             return back()->withInput()->with('error', 'Kredensial Admin salah. Silakan periksa kembali username dan password.');
         }
 
