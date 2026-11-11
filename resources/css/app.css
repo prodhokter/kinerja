@@ -170,6 +170,13 @@
         border-color: #0f172a;
         box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
     }
+
+    /* Keyboard focus must stay visible on every interactive element. */
+    .focus-ring:focus-visible {
+        outline: 2px solid #0f172a;
+        outline-offset: 2px;
+        border-radius: 0.5rem;
+    }
 }
 
 /* Print Stylesheet */
